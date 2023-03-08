@@ -11,6 +11,11 @@ public:
     
     //puntero a otro objeto de tipo Node (almacena la direccion de memoria del siguiente nodo en la lista)
     Node *siguiente;
+
+    //nuevo nodo con un "valor" y que establezca el puntero al siguiente nodo
+    //se toma un valor entero y se asigna a "valor" e inicializa el puntero a null
+    //el nodo que se està creando no tiene un nodo siguiente(en la lista simple)
+    Node(int valor) : valor(valor), siguiente(nullptr){}
 }
 
 //Definir clase List(para implementar una lista enlazada simple)
@@ -38,7 +43,7 @@ void List::insertar(int valor){
 
     nodo->valor = valor;
     nodo->siguiente = principal;
-    head = nodo;
+    principal = nodo;
 
 
 }
