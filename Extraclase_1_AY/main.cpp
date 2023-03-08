@@ -5,6 +5,7 @@
 
 //Definir clase Node
 class Node{
+public:
     //objeto valor, que almacena el valor del nodo
     int valor;
     
@@ -14,7 +15,7 @@ class Node{
 
 //Definir clase List(para implementar una lista enlazada simple)
 class List{
-
+public:
     //definir puntero principal para apuntar al primer nodo de la lista(Objeto de tipo Node)
     Node *principal;
 
