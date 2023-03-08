@@ -42,7 +42,11 @@ void List::insertar(int valor){
 
 
 }
-
+//metodo para consultar el valor del nodo
+void List::consultar(Node *principal){
+    int valornodo = &principal;
+    cout << valornodo << endl;
+}
 
 //Definir clase Collector
 class Collector{
