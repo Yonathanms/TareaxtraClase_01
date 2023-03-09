@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstddef>
 #include <list>
+using namespace std;
 
 //Definir clase Node
 class Node{
@@ -16,7 +17,7 @@ public:
     //se toma un valor entero y se asigna a "valor" e inicializa el puntero a null
     //el nodo que se està creando no tiene un nodo siguiente(en la lista simple)
     Node(int valor) : valor(valor), siguiente(nullptr){}
-}
+};
 
 //Definir clase List(para implementar una lista enlazada simple)
 class List{
@@ -31,8 +32,9 @@ public:
     //Declarar el metodo de insercion para la clase List
     //Toma un "valor" definido anteriormente de tipo entero
     //tipo void porque no devuelve nada
-    void insertar(int valor)
-}
+    void insertar(int valor);
+    void consultar();
+};
 
 //definicion del metodo insertar declarado en la clase llamada List{}
 //el metodo toma un "valor" entero como parametro e inserta un nuevo objeto Node al inicio
@@ -48,17 +50,22 @@ void List::insertar(int valor){
 
 }
 //metodo para consultar el valor del nodo
-void List::consultar(Node *principal){
-    int valornodo = &principal;
-    cout << valornodo << endl;
+void List::consultar(){
+    if (principal!=nullptr){
+        cout << "el valor del primer nodo de la lista es : " << principal->valor << endl;
+    }
+    else {
+        cout << "La lista esta vacia" << endl;
+    }
 }
 
 //Definir clase Collector
 class Collector{
 
-}
+};
 
 //funcion principal
 int main() {
+
     return 0;
 }
