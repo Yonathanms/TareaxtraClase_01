@@ -62,6 +62,26 @@ void List::consultar(){
 //Definir clase Collector
 class Collector{
 public:
+//llamada a obtenerInstancia(), devuelve una referencia a la instancia unica
+    static Collector &obtenerInstancia();
+
+//llamada a la funcion para agregar un nodo a la lista_libre
+    void agregar(Node *nodo);
+
+//privado para que solo se pueda acceder desde la clase collector y no se vaya a hacer un desmadre
+private:
+
+//definicion de la lista_libre, para almacenar nodos que puedan ser reutilizados en un futuro
+//lista_libre almacena los nodos eliminados de la lista, mas no de memoria, toma un puntero a un nodo como parametro
+    std::list<Node*> lista_libre;
+
+//Constructor de la clase collector
+    Collector(){};
+
+    Collector(const Collector&) = delete;
+
+    Collector &operator = (const Collector&) = delete;
+
 };
 
 //metodos para la clase collector 
@@ -84,6 +104,40 @@ void Collector::agregar(Node *nodo){
 
 //funcion principal
 int main() {
-    Collector& collector =Collector::obtenerInstancia();
+
+    List list;
+    Collector& Collector = Collector::obtenerInstancia();
+
+    //pruebas: se insertan nodos 
+    list.insertar(3);
+    list.insertar(7);
+    list.insertar(10);
+
+    //printea elementos de la lista
+    Node *actual = list.principal;
+    while (actual != nullptr)
+    {
+        cout<<"\n"<< actual->valor << "";
+        actual = actual -> siguiente; 
+    }
+    cout<<std::endl;
+
+    //Eliminar nodo del inicio
+    Node* nodoparaborrar = list.principal;
+    list.principal = nodoparaborrar->siguiente;
+    Collector.agregar(nodoparaborrar);
+
+    //se inserta otro nodo y se elimina el inicial
+    list.insertar(15);
+
+    //prints
+    actual = list.principal;
+    while (actual != nullptr)
+    {
+        cout<<"\n"<< actual->valor << "";
+        actual = actual -> siguiente; 
+    }
+    
+    
     return 0;
 }
