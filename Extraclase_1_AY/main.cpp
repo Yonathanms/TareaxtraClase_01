@@ -75,12 +75,8 @@ private:
 //lista_libre almacena los nodos eliminados de la lista, mas no de memoria, toma un puntero a un nodo como parametro
     std::list<Node*> lista_libre;
 
-//Constructor de la clase collector
-    Collector(){};
+//Constructor de la clase collector(esta linea podria no estar aqui, nada mas se hace para que no se creen instancias desde fuera)
 
-    Collector(const Collector&) = delete;
-
-    Collector &operator = (const Collector&) = delete;
 
 };
 
@@ -95,7 +91,8 @@ Collector &Collector::obtenerInstancia(){
     return instancia;
 }
 
-//Funcion agregar: agrega un nodo a la lista_libre. Nada mas agrega un nodo al inicio de la lista usando "push_front" que se utiliza para manipular elementos de la lista
+//Funcion agregar: agrega un nodo a la lista_libre. Nada mas agrega un nodo al inicio de la lista_libre
+//definida en class collector. usando "push_front" que se utiliza para manipular elementos de la lista
 void Collector::agregar(Node *nodo){
     lista_libre.push_front(nodo);
 }
@@ -105,13 +102,14 @@ void Collector::agregar(Node *nodo){
 //funcion principal
 int main() {
 
+
     List list;
     Collector& Collector = Collector::obtenerInstancia();
 
     //pruebas: se insertan nodos 
+    list.insertar(1);
+    list.insertar(2);
     list.insertar(3);
-    list.insertar(7);
-    list.insertar(10);
 
     //printea elementos de la lista
     Node *actual = list.principal;
@@ -128,9 +126,9 @@ int main() {
     Collector.agregar(nodoparaborrar);
 
     //se inserta otro nodo y se elimina el inicial
-    list.insertar(15);
+    list.insertar(4);
 
-    //prints
+    //prints de los elementos de la lista :)
     actual = list.principal;
     while (actual != nullptr)
     {
