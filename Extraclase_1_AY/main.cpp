@@ -61,11 +61,29 @@ void List::consultar(){
 
 //Definir clase Collector
 class Collector{
-
+public:
 };
+
+//metodos para la clase collector 
+
+//Funcion obtenerInstancia: DEvuelve una referencia a la instancia unica de la clase llamada Collector
+//La clase se crea como una variable estatica local dentro de la funcion y se devuelve a cada llamada
+//Con la unica llamada se asegura que solo exista una instancia de la clase dentro del programa :3 
+
+Collector &Collector::obtenerInstancia(){
+    static Collector instancia;
+    return instancia;
+}
+
+//Funcion agregar: agrega un nodo a la lista_libre. Nada mas agrega un nodo al inicio de la lista usando "push_front" que se utiliza para manipular elementos de la lista
+void Collector::agregar(Node *nodo){
+    lista_libre.push_front(nodo);
+}
+
+
 
 //funcion principal
 int main() {
-
+    Collector& collector =Collector::obtenerInstancia();
     return 0;
 }
