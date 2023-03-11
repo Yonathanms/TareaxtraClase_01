@@ -147,11 +147,13 @@ int main() {
 
 
     List list;
+    Collector &collector = Collector::obtenerInstancia();
  
 
     list.insertar(1);
     list.insertar(2);
     list.insertar(3);
+    list.insertar(4);
 
     Node *actual = list.principal;
     while (actual != nullptr)
@@ -161,11 +163,15 @@ int main() {
     }
     cout<<std::endl;
 
+    cout<<"\nlista libre tamaño antes de borrar: "<< collector.lista_libre.size() << endl;
+
     Node* nodoparaborrar = list.principal;
     list.principal = nodoparaborrar->siguiente;
     delete nodoparaborrar; 
 
-    list.insertar(4);
+    list.insertar(7);
+
+    cout<<"\nlista libre tamaño despues de borrar: "<< collector.lista_libre.size() << endl;
 
     actual = list.principal;
     while (actual != nullptr)
@@ -174,6 +180,12 @@ int main() {
         actual = actual -> siguiente; 
     }
     
-    std :: cout << std::endl;
+    Node *nuevo_nodo = new Node(5);
+
+    nuevo_nodo->siguiente = list.principal;
+    list.principal  = nuevo_nodo;
+
+    cout<<"\n\nlista libre tamaño despues de insertar: "<< collector.lista_libre.size() << endl;
+
     return 0;
 }
