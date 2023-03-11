@@ -17,7 +17,33 @@ public:
     //se toma un valor entero y se asigna a "valor" e inicializa el puntero a null
     //el nodo que se està creando no tiene un nodo siguiente(en la lista simple)
     Node(int valor) : valor(valor), siguiente(nullptr){}
+
+    void *operator new(std::size_t tamano);
+    void operator delete(void *puntero, std::size_t tamano); 
+
+    friend class Collector;
+private: 
+    static Collector& collector;
+
 };
+
+Collector& Node::collector = Collector::obtenerInstancia();
+
+void *Node::operator new(std::size_t tamano){
+    std::list<Node*> lista_libre = collector.lista_libre;
+    if (!lista_libre.empty()){
+        Node *nodo = lista_libre.front();
+        lista_libre.pop_front();
+        return nodo;
+    }
+    return operator new(tamano)
+}
+
+void Node::operator delete(void *puntero, std::size_t tamano){
+
+    std::list<Node*> *lista_libre = collector.lista_libre;
+    lista_libre->push_front(static_cast<Node*>(puntero));
+}
 
 //Definir clase List(para implementar una lista enlazada simple)
 class List{
