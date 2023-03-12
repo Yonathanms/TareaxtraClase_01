@@ -1,3 +1,5 @@
+//los metodos no se documentan en doxygen a nivel de implementacion, se debe documentar en la declaracion de la clase :)
+
 /**
 *@file main.cpp
 *@brief Aplicacion que reutiliza la memoria 
@@ -13,38 +15,85 @@ class Collector;
 
 /**
 *@class Node
-*@brief almacenador de datos
-*Almacena un valor de tipo int y un puntero al siguiente, así como los respectivos métodos
-para consultar o modificar estos datos.
+*@brief esta clase representa un nodo en una lista
 */
 
 class Node{
 public:
-
+    /**
+     * @brief el valor almacenado en el nodo
+    */
     int valor;
+
+    /**
+     * @brief un puntero al siguiente nodo en la lista
+    */
     Node *siguiente;
+
+    /**
+    * @brief Constructor del nodo 
+    * @param valor El valor a almacenar en el nodo
+    */
     Node(int valor) : valor(valor), siguiente(nullptr){}
+
+    /**
+     * @brief operador sobrecargado "new" para almacenador nodos de la lista libre
+     * @param size El tamaño del nodo a almacenar
+     * @return Un puntero al nodo almacenado
+    */
     void *operator new(std::size_t size);
+
+    /**
+     * @brief operador sobrecargado "delete" para liberar nodos de lista_libre.
+    */
     void operator delete(void *ptr, std::size_t size); 
+
+    /**
+     * @brief Una clase amigo para poder acceder a collector para almacenar y liberar nodos
+    */
     friend class Collector;
+
 public:
+
+    /**
+     * @brief una referencia estatica al collector.
+    */
     static Collector &collector;
 
 };
 
 /**
 *@class Collector
-*@brief Reutilizador de memoria
-*Es responsable de reciclar la memoria liberada en List. Collector es implementado
-mediante una lista que guarda las direcciones de memoria que han sido liberadas
+*@brief esta clase es un recolector que maneja la asignacion y desasignacion de nodos
 */
 
 class Collector{
 public:
+
+    /**
+     * @brief devuelve la instancia singleton del collector.
+    */
     static Collector &obtenerInstancia();
-    void agregar(Node *nodo);  
+
+    /**
+     * @brief Agrega un nodo a la lista libre para rehusar
+     * @param nodo a un puntero al nodo para agregar
+    */
+    void agregar(Node *nodo);
+
+    /**
+     *@brief la lista de nodos que podrian ser reutilizados  
+    */  
     std::list<Node*> lista_libre;
+
+    /**
+     * @brief el constructor predeterminado del collector
+    */
     Collector(){}
+
+    /**
+     * @brief copiar el constructor eliminado para garantizar que solo hay una instancia de collector
+    */
     Collector(const Collector&) = delete;
     Collector &operator=(const Collector&) = delete; 
     
@@ -54,14 +103,10 @@ Collector &Node :: collector = Collector::obtenerInstancia();
 
 
 /**
-*@brief asignar memoria dinaicamente
-*el metodo operator new se sobrecarga para utilizar un patron
-para que cada vez que se crea un nuevo objeto tipo "node" no se asigne memoria por cada creacion,
-sino que se busque en una lista de nodos previamente eliminados y devolver uno si esta disponible
-*@param std::size_t, indica el tamaño en bytes del objetos que se desea alojar en memoria dinamica
-*@return devuelve un puntero a la memoria recien asignada
+*@brief metodo sobrecargado operator new para almacenar nodos de la lista libre
+*@param size el tamaño del nodo a almacenar
+*@return devuelve un puntero al noodo almacenado
 */
-
 void *Node::operator new(std::size_t size){
     std::list<Node*>& lista_libre = collector.lista_libre;
     if (!lista_libre.empty()){
@@ -73,14 +118,10 @@ void *Node::operator new(std::size_t size){
 }
 
 /**
-*@brief desasignar memoria 
-*Se encarga de desasignar la memoria previamente asignada por operator new
-*@param un puntero que apunta al objeto que se desea liberar y su tamaño en bytes
-*@return devuelve el nodo que se va a eliminara a lalista de nodos libres en el recolector de basura
-no hay un return especifico para el metodo ya que lo que hace es desasignar memoria
+*@brief metodo sobrecargado operator delete para liberar nodos de lista_libre
+*@param puntero Un puntero al nodo por liberar.
+*@return size El tamaño del nodo a liberar
 */
-
-
 void Node::operator delete(void *puntero, std::size_t){
 
     std::list<Node*> &lista_libre = collector.lista_libre;
@@ -89,9 +130,8 @@ void Node::operator delete(void *puntero, std::size_t){
 
 /**
 *@brief obtiene la instancia unica del recolector de nodos 
-*@return devuelve una referencia a la instancia del colector.
+*@return devuelve una referencia a la instancia de la clase Collector.
 */
-
 Collector &Collector::obtenerInstancia(){
     static Collector instancia;
     return instancia;
@@ -107,18 +147,25 @@ void Collector::agregar(Node *nodo){
 }
 
 /**
-*@brief Clase que representa una lista enlazada 
+*@brief Clase que implementa una lista enlazada para almacenar objetos de tipo Node. 
 */
-
 class List{
 public:
+
+    /**
+     * @brief El primer nodo de la lista enlazada
+    */
     Node *principal;
 
     /**
-    * 
+    * @brief Construye un objeto lista vacio.
     */
     List() : principal(nullptr){}
 
+    /**
+     * @brief Inserta un nuevo Node con el valor dado al inicio de la lista.
+     * @param valor el valor a almacenar en el nuevo nodo
+    */
 
     void insertar(int valor);
     void consultar();
@@ -127,13 +174,11 @@ public:
 void List::insertar(int valor){
 
     Node *nodo = (Node*)malloc(sizeof(Node));
-
     nodo->valor = valor;
     nodo->siguiente = principal;
     principal = nodo;
-
-
 }
+
 void List::consultar(){
     if (principal!=nullptr){
         cout << "el valor del primer nodo de la lista es : " << principal->valor << endl;
@@ -143,19 +188,30 @@ void List::consultar(){
     }
 }
 
+/**
+ * @brief entrada del programa
+ * 
+ * Esta funcion main crea una nueva "lsta" de tipo List, inserta nodos con valores enteros
+ * imprime la lista en su estado actual haciendo uso de un bucle While, borra un nodo e inserta otro
+ * hace uso de la clase Collector para administar la asignacion y desasignacion de memoria de los objetos tipo Node
+ * ademas, imprime tambien el valor  de lista_libre, donde se ejemplifica que al borrar un nodo la lista
+ * tendra un valor de 1, y al crear otro y almacenarlo en esa posicion, se reutiliza ese espacio
+ * y ahora la lista libre contara con un valor de 0.
+ * 
+ * @return 0 cuando el programa se ejecuta de manera correcta :)
+*/
+
 int main() {
 
-
-    List list;
+    List lista;
     Collector &collector = Collector::obtenerInstancia();
  
+    lista.insertar(1);
+    lista.insertar(2);
+    lista.insertar(3);
+    lista.insertar(4);
 
-    list.insertar(1);
-    list.insertar(2);
-    list.insertar(3);
-    list.insertar(4);
-
-    Node *actual = list.principal;
+    Node *actual = lista.principal;
     while (actual != nullptr)
     {
         cout<<"\n"<< actual->valor << "";
@@ -165,15 +221,15 @@ int main() {
 
     cout<<"\nlista libre tamaño antes de borrar: "<< collector.lista_libre.size() << endl;
 
-    Node* nodoparaborrar = list.principal;
-    list.principal = nodoparaborrar->siguiente;
+    Node* nodoparaborrar = lista.principal;
+    lista.principal = nodoparaborrar->siguiente;
     delete nodoparaborrar; 
 
-    list.insertar(7);
+    lista.insertar(7);
 
     cout<<"\nlista libre tamaño despues de borrar: "<< collector.lista_libre.size() << endl;
 
-    actual = list.principal;
+    actual = lista.principal;
     while (actual != nullptr)
     {
         cout<<"\n"<< actual->valor << "";
@@ -181,9 +237,8 @@ int main() {
     }
     
     Node *nuevo_nodo = new Node(5);
-
-    nuevo_nodo->siguiente = list.principal;
-    list.principal  = nuevo_nodo;
+    nuevo_nodo->siguiente = lista.principal;
+    lista.principal  = nuevo_nodo;
 
     cout<<"\n\nlista libre tamaño despues de insertar: "<< collector.lista_libre.size() << endl;
 
