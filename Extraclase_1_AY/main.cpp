@@ -1,3 +1,11 @@
+//Axel Flores y Yonathan Monge
+//Algoritmos y estructuras de datos 2
+//Grupo 1
+//Profesor: Leonardo Araya Martinez
+//Fecha de entrega: 12/03/2023
+
+
+
 //los metodos no se documentan en doxygen a nivel de implementacion, se debe documentar en la declaracion de la clase :)
 
 /**
